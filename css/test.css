@@ -1,0 +1,41 @@
+#codeEditor {
+  margin : 0px;
+  padding: 0px;
+  height : calc(100% - 2.5em - 2.4em);
+}
+
+#result .column {
+  padding: 0px;
+}
+
+#right ,#left {
+  height    : 100%;
+}
+
+#editor {
+  height: 70%;
+  margin: 0px;
+}
+
+#result {
+  height: 30%;
+  margin: 0px;
+}
+
+#content>#right>#result>.grid {
+  height: 100%;
+  width : 100%;
+  margin: 0px;
+}
+
+@media only screen and (max-width: 767px) {
+
+  #right,
+  #result {
+    height: auto !important;
+  }
+
+  #left, #editor, #result {
+    height: 350px !important;
+  }
+}

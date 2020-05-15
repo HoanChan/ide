@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<!--Cái này cho IE khỏi hiện block content vì nó nghĩ đây là web đã lưu -->
+<html>
+
+<head>
+  <!-- Use lastest version of Internet Explorer -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="UTF-8">
+  <meta name="description" content="Free and open-source online code editor that allows you to write and execute code from a rich set of languages.">
+  <meta name="keywords" content="online editor, online code editor, online ide, online compiler, online interpreter, run code online, learn programming online,
+            online debugger, programming in browser, online code runner, online code execution, debug online, debug C code online, debug C++ code online,
+            programming online, snippet, snippets, code snippet, code snippets, pastebin, execute code, programming in browser, run c online, run C++ online,
+            run java online, run python online, run ruby online, run c# online, run rust online, run pascal online, run basic online">
+  <meta name="author" content="Lê Hoàn Chân">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="HC IDE">
+  <meta property="og:description" content="Code IDE for Pascal, C, Java, Python, Ruby, Basic, and more.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/HoanChan/HoanChan.github.io/master/live/ide/images/background.png">
+  <title>HC-IDE</title>
+  <link rel="shortcut icon" href="./images/icon.png" type="image/x-icon">
+  <link rel="icon" href="./images/icon.png" type="image/x-icon">
+  <link rel="apple-touch-icon" href="./images/icon.png">
+  <meta name="apple-mobile-web-app-title" content="HC-IDE">
+
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+  <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/loader.js"></script>
+
+  <script src="https://cdn.ckeditor.com/4.14.0/full-all/ckeditor.js"></script>
+  <script src="https://cdn.ckeditor.com/4.14.0/full-all/adapters/jquery.js"></script>
+
+  <script src="js/ckeditor.js"></script>
+
+  <script type="text/javascript" src="third_party/download.js"></script>
+  <link rel="stylesheet" href="css/utilities.css">
+  <link rel="stylesheet" href="css/resizable.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/editor.css">
+  <script type="text/javascript" src="js/resizable.js"></script>
+  <script type="text/javascript" src="js/editor.js"></script>
+</head>
+
+<body>
+  <div id="site-navigation" class="ui small inverted menu">
+    <div id="site-header" class="header item">
+      <a href="">
+        <img id="site-icon" src="./images/icon.png">
+        <h2 class="mobile hidden">HC-IDE</h2>
+      </a>
+    </div>
+    <div class="left menu">
+      <div class="ui dropdown item site-links on-hover">
+        File <i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item" target="_blank" href="https://HoanChan.github.io/live/ide"><i class="file code icon"></i> Tạo mới</a>
+          <div id="btnOpen" class="item btn-file"><i class="folder open icon"></i> Mở (Ctrl + O)</div>
+          <div id="btnImport" class="item btn-file"><i class="upload icon"></i> Nhập Tests</div>
+          <div id="btnSave" class="item"><i class="save icon"></i> Lưu (Ctrl + S)</div>
+        </div>
+      </div>
+      <div id="navigation-message" class="item borderless mx-1">
+        <span class="navigation-message-text"></span>
+      </div>
+    </div>
+    <div class="right menu">
+      <div class="ui dropdown item site-links">
+        <span>More</span>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <div class="link item" onclick="$('#viettelpay-modal').modal('show')"><i class="dollar sign icon"></i> Donate with ViettelPay</div>
+          <div class="link item" onclick="$('#momo-modal').modal('show')"><i class="dollar sign icon"></i> Donate with Momo</div>
+          <a class="item" target="_blank" href="https://paypal.me/HoanChan"><i class="paypal icon"></i> Donate with PayPal</a>
+          <div class="divider"></div>
+          <a class="item" target="_blank" href="https://hoanchan.github.io/"><i class="github icon"></i> View source code on Github</a>
+          <a class="item" target="_blank" href="https://github.com/HoanChan/HoanChan.github.io/issues/new"><i class="exclamation circle icon"></i> Report an issue</a>
+          <div class="divider"></div>
+          <a class="item" target="_blank" href="mailto:Le.Hoan.Chan@gmail.com"><i class="paper plane icon"></i> Contact the author</a>
+          <div class="divider"></div>
+          <a class="item" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fhoanchan.github.io%2Flive%2Fide"
+            style="background-color: #1877f2 !important; color: white !important;"><i class="facebook icon"></i>
+            Share on Facebook</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="content" class="ui grid p-1">
+    <div class="column p-1 h-100">
+      <div class="ui equal width grid p-0 m-0 h-100">
+        <div class="row py-1">
+          <div id="ProblemList" class="column p-1 h-100 scroll-y ui form">
+            <button id="btnAddProblem" class="fluid ui basic button"><i class="plus icon"></i></button>
+          </div>
+          <div id="TestList" class="column p-1 h-100 scroll-y ui form">
+            <button id="btnAddTest" class="fluid ui basic button"><i class="plus icon"></i></button>
+          </div>
+        </div>
+        <div class="resizable row"></div>
+        <div class="row py-1">
+          <div class="ui segment h-100 w-100 p-1 scroll-y">
+            <form class="ui form">
+              <h4 class="ui dividing header">Giới hạn của các Test:</h4>
+              <div class="field">
+                <label>Time limit in miliseconds</label>
+                <div class="ui corner labeled input">
+                  <input id="txtTimeLimit" type="text" placeholder="Time limit">
+                  <div class="ui corner label"> <i class="asterisk icon"></i> </div>
+                </div>
+              </div>
+              <div class="field">
+                <label>Memory limit in Kilobyte</label>
+                <div class="ui corner labeled input">
+                  <input id="txtMemoryLimit" type="text" placeholder="Memory limit">
+                  <div class="ui corner label"> <i class="asterisk icon"></i> </div>
+                </div>
+              </div>
+              <h4 class="ui dividing header">Xử lý tự động:</h4>
+              <div class="field">
+                <label>Đổi tên các Tests</label>
+                <div class="ui right action input">
+                  <input id="txtRename" name="txtRename" type="text" placeholder="Test name">
+                  <div id="btnRename" class="ui teal button"> <i class="sort numeric down icon"></i> Đổi tên </div>
+                </div>
+              </div>
+              <div id="lblRenameError" class="ui error message"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="resizable column" data-size="350px" data-min="350px" data-max="50%"></div>
+    <div class="column p-1 h-100">
+      <div class="ui equal width grid p-0 m-0 h-100">
+        <div class="row py-1">
+          <div id="editorContainer" class="ui segment h-100 w-100 p-1">
+            <textarea id="txtEdit"></textarea>
+            <textarea id="txtHTML" style="visibility: hidden; display: none;"></textarea>
+          </div>
+        </div>
+        <div class="resizable row"></div>
+        <div class="row py-1">
+          <div class="ui segment h-100 w-100 p-1 scroll-y">
+            <div class="ui form">
+              <div class="field">
+                <label>Input</label>
+                <textarea id="txtInput"></textarea>
+              </div>
+              <div class="field">
+                <label>Output</label>
+                <textarea id="txtOutput"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Dialog -->
+  <div id="mess-modal" class="ui modal">
+    <div class="header">
+      <i class="bell outline icon"></i>
+      <span id="title"></span>
+    </div>
+    <div class="scrolling content"></div>
+    <div class="actions">
+      <div class="ui small labeled icon cancel button">
+        <i class="remove icon"></i>
+        Close (ESC)
+      </div>
+    </div>
+  </div>
+  <div id="momo-modal" class="ui modal">
+    <div class="header">
+      <i class="bell outline icon"></i>
+      <span id="title">Quét mã Momo ủng hộ tôi</span>
+    </div>
+    <div class="scrolling content text-center">
+      <img src="images/Momo.svg" alt="" width="300" height="300">
+      <h2>LE HOAN CHAN</h2>
+    </div>
+    <div class="actions">
+      <div class="ui small labeled icon cancel button">
+        <i class="remove icon"></i>
+        Close (ESC)
+      </div>
+    </div>
+  </div>
+  <div id="viettelpay-modal" class="ui modal">
+    <div class="header">
+      <i class="bell outline icon"></i>
+      <span id="title">Quét mã ViettelPay ủng hộ tôi</span>
+    </div>
+    <div class="scrolling content text-center">
+      <img src="images/viettelpay.jpg" alt="" width="300" height="300">
+      <h2>LE HOAN CHAN</h2>
+    </div>
+    <div class="actions">
+      <div class="ui small labeled icon cancel button">
+        <i class="remove icon"></i>
+        Close (ESC)
+      </div>
+    </div>
+  </div>
+  <!-- End Dialog -->
+  <div id="site-footer" class="ui bottom attached equal width grid p-0 m-0 w-100">
+    <div class="column p-0 m-0">
+      <a class="item" target="_blank" href="https://paypal.me/HoanChan"><i class="paypal icon"></i> Donate with PayPal</a>
+    </div>
+    <div class="column p-0 m-0">
+      <div class="link" onclick="$('#momo-modal').modal('show')"><i class="dollar sign icon"></i> Donate with Momo</div>
+    </div>
+    <div class="column p-0 m-0">
+      <div class="link" onclick="$('#viettelpay-modal').modal('show')"><i class="dollar sign icon"></i> Donate with ViettelPay</div>
+    </div>
+    <div class="column p-0 m-0 text-right">© 2020 - Hoàn Chân</div>
+  </div>
+  <!-- Google Analytics (https://www.google.com/analytics) -->
+  <script>
+    !function (j, e, k, y, l, L) {
+      j.GoogleAnalyticsObject = y, j[y] || (j[y] = function () {
+        (j[y].q = j[y].q || []).push(arguments)
+      }), j[y].l = +new Date, l = e.createElement(k),
+        L = e.getElementsByTagName(k)[0], l.src = 'https://www.google-analytics.com/analytics.js',
+        L.parentNode.insertBefore(l, L)
+    }(window, document, 'script', 'ga');
+
+    ga('create', 'UA-50247134-3', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<!--Cái này cho IE khỏi hiện block content vì nó nghĩ đây là web đã lưu -->
+<html>
+
+<head>
+  <!-- Use lastest version of Internet Explorer -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="UTF-8">
+  <meta name="description" content="Free and open-source online code editor that allows you to write and execute code from a rich set of languages.">
+  <meta name="keywords" content="online editor, online code editor, online ide, online compiler, online interpreter, run code online, learn programming online,
+            online debugger, programming in browser, online code runner, online code execution, debug online, debug C code online, debug C++ code online,
+            programming online, snippet, snippets, code snippet, code snippets, pastebin, execute code, programming in browser, run c online, run C++ online,
+            run java online, run python online, run ruby online, run c# online, run rust online, run pascal online, run basic online">
+  <meta name="author" content="Lê Hoàn Chân">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="HC IDE">
+  <meta property="og:description" content="Code IDE for Pascal, C, Java, Python, Ruby, Basic, and more.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/HoanChan/HoanChan.github.io/master/live/ide/images/background.png">
+  <title>HC-IDE</title>
+  <link rel="shortcut icon" href="./images/icon.png" type="image/x-icon">
+  <link rel="icon" href="./images/icon.png" type="image/x-icon">
+  <link rel="apple-touch-icon" href="./images/icon.png"> 
+  <meta name="apple-mobile-web-app-title" content="HC-IDE">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+  <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/loader.js"></script>
+  <script type="text/javascript" src="third_party/download.js"></script>
+
+  <link rel="stylesheet" href="css/utilities.css">
+  <link rel="stylesheet" href="css/resizable.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/code.css">
+  <script src="js/resizable.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/code.js"></script>
+</head>
+
+<body>
+  <div id="site-navigation" class="ui small inverted menu">
+    <div id="site-header" class="header item">
+      <a href="">
+        <img id="site-icon" src="./images/icon.png">
+        <h2 class="mobile hidden">HC-IDE</h2>
+      </a>
+    </div>
+    <div class="left menu">
+      <div class="ui dropdown item site-links on-hover">
+        File <i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item" target="_blank" href="https://HoanChan.github.io/live/ide"><i class="file code icon"></i> Tạo mới</a>
+          <div id="btnOpen" class="item btn-file"><i class="code icon"></i> Mở (Ctrl + O)</div>
+          <div id="btnSave" class="item"><i class="save icon"></i> Lưu (Ctrl + S)</div>
+          <div id="btnDownload" class="item"><i class="download icon"></i> Tải về</div>
+          <div id="btnShare" class="item"><i class="share icon"></i> Chia sẻ</div>
+          <div id="btnInsertCode" class="item"><i class="file code outline icon"></i>Chèn code mẫu</div>
+        </div>
+      </div>
+      <div class="link item" onclick="$('#site-settings').modal('show')"><i class="cog icon"></i> <span class="portrait mobile hidden">Cài đặt</span></div>
+
+      <div id="navigation-message" class="item borderless mx-1">
+        <span class="navigation-message-text"></span>
+      </div>
+    </div>
+    <div class="right menu">
+      <div id="about" class="link item" onclick="$('#info-modal').modal('show')"><i class="info circle icon"></i> <span class="mobile hidden">Thông tin</span></div>
+      <!-- <a id="api-url" class="link item" target="_blank" href="..."><i class="server icon"></i> API</a> -->
+      <div class="ui dropdown item site-links">
+        <span>More</span>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item" target="_blank" href="https://paypal.me/HoanChan"><i class="paypal icon"></i> Donate with PayPal</a>
+          <div class="divider"></div>
+          <a class="item" target="_blank" href="https://hoanchan.github.io/"><i class="github icon"></i> View source code on Github</a>
+          <a class="item" target="_blank" href="https://github.com/HoanChan/HoanChan.github.io/issues/new"><i class="exclamation circle icon"></i> Report an issue</a>
+          <div class="divider"></div>
+          <a class="item" target="_blank" href="mailto:Le.Hoan.Chan@gmail.com"><i class="paper plane icon"></i> Contact the author</a>
+          <div class="divider"></div>
+          <a class="item" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fhoanchan.github.io%2Flive%2Fide"
+            style="background-color: #1877f2 !important; color: white !important;"><i class="facebook icon"></i>
+            Share on Facebook</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="content" class="ui grid">
+    <div id="left" class="column">
+      <div class="ui top attached mini menu">
+        <div class="item borderless p-1">
+          <select id="select-language" class="ui compact selection dropdown">
+            <option value="45" mode="UNKNOWN">Assembly (NASM 2.14.02)</option> <!-- Unknown mode. Help needed. -->
+            <option value="46" mode="shell">Bash (5.0.0)</option>
+            <option value="47" mode="UNKNOWN">Basic (FBC 1.07.1)</option> <!-- Unknown mode. Help needed. -->
+            <option value="48" mode="c">C (GCC 7.4.0)</option>
+            <option value="49" mode="c">C (GCC 8.3.0)</option>
+            <option value="50" mode="c">C (GCC 9.2.0)</option>
+            <option value="51" mode="csharp">C# (Mono 6.6.0.161)</option>
+            <option value="52" mode="cpp">C++ (GCC 7.4.0)</option>
+            <option value="53" mode="cpp">C++ (GCC 8.3.0)</option>
+            <option value="54" mode="cpp">C++ (GCC 9.2.0)</option>
+            <option value="55" mode="UNKNOWN">Common Lisp (SBCL 2.0.0)</option> <!-- Unknown mode. Help needed. -->
+            <option value="56" mode="UNKNOWN">D (DMD 2.089.1)</option> <!-- Unknown mode. Help needed. -->
+            <option value="57" mode="UNKNOWN">Elixir (1.9.4)</option> <!-- Unknown mode. Help needed. -->
+            <option value="58" mode="UNKNOWN">Erlang (OTP 22.2)</option> <!-- Unknown mode. Help needed. -->
+            <option value="44" mode="plaintext">Executable</option>
+            <option value="59" mode="UNKNOWN">Fortran (GFortran 9.2.0)</option> <!-- Unknown mode. Help needed. -->
+            <option value="60" mode="go">Go (1.13.5)</option>
+            <option value="61" mode="UNKNOWN">Haskell (GHC 8.8.1)</option> <!-- Unknown mode. Help needed. -->
+            <option value="62" mode="java">Java (OpenJDK 13.0.1)</option>
+            <option value="63" mode="javascript">JavaScript (Node.js 12.14.0)</option>
+            <option value="64" mode="lua">Lua (5.3.5)</option>
+            <option value="1000" mode="python">Nim (stable)</option> <!-- Replacement mode. Help needed. -->
+            <option value="65" mode="UNKNOWN">OCaml (4.09.0)</option> <!-- Unknown mode. Help needed. -->
+            <option value="66" mode="UNKNOWN">Octave (5.1.0)</option> <!-- Unknown mode. Help needed. -->
+            <option value="67" mode="pascal">Pascal (FPC 3.0.4)</option>
+            <option value="68" mode="php">PHP (7.4.1)</option>
+            <option value="43" mode="plaintext">Plain Text</option>
+            <option value="69" mode="UNKNOWN">Prolog (GNU Prolog 1.4.5)</option> <!-- Unknown mode. Help needed. -->
+            <option value="70" mode="python">Python (2.7.17)</option>
+            <option value="71" mode="python">Python (3.8.1)</option>
+            <option value="72" mode="ruby">Ruby (2.7.0)</option>
+            <option value="73" mode="rust">Rust (1.40.0)</option>
+            <option value="74" mode="rust">TypeScript (3.7.4)</option>
+            <option value="1001" mode="rust">V (latest)</option> <!-- Replacement mode. Help needed. -->
+          </select>
+        </div>
+        <div class="item borderless p-1 lm_title"></div>
+        <div class="item borderless right p-1">
+          <div class="ui input">
+            <input id="compiler-options" type="text" placeholder="Cmp opts"></input>
+          </div>
+        </div>
+      </div>
+      <div id="codeEditor" class="ui attached segment"> </div>
+      <div class="ui bottom attached mini menu">
+        <div class="item borderless p-1 ui">
+          <div class="ui input">
+            <input id="command-line-arguments" type="text" placeholder="Cmd args"></input>
+          </div>
+        </div>
+        <div class="item borderless p-1">
+          <span id="editor-status-line"></span>
+          <span id="status-line"></span>
+        </div>
+        <div class="item borderless right p-1">
+          <button id="btnRun" class="ui primary labeled icon button"><i class="play icon"></i>Chạy (F9)</button>
+        </div>
+      </div>
+    </div>
+    <div class="resizable column"></div>
+    <div id="right" class="column">
+      <div class="row">
+        <div class="ui tabular mini menu m-0">
+          <a class="active item" data-tab="input"> Input <span id="stdin-dot" class="dot" hidden></span> </a>
+        </div>
+        <div id="input" data-tab="input" class="ui active tab p-0 m-0"> </div>
+      </div>      
+    <div class="resizable row"></div>
+      <div id="result" class="row">
+        <div class="ui tabular mini menu m-0">
+          <a class="active item" data-tab="ouput"> Output <span id="stdout-dot" class="dot" hidden></span> </a>
+          <a class="item" data-tab="compile"> Compile <span id="compile-output-dot" class="dot" hidden></span></a>
+          <a class="item" data-tab="error"> Error <span id="stderr-dot" class="dot" hidden></span></a>
+          <a class="item" data-tab="sandbox"> Sandbox <span id="sandbox-message-dot" class="dot" hidden></span></a>
+        </div>
+        <div id="output" data-tab="ouput" class="ui active tab p-0 m-0"> </div>
+        <div id="compile" data-tab="compile" class="ui tab p-0 m-0"> </div>
+        <div id="error" data-tab="error" class="ui tab p-0 m-0"> </div>
+        <div id="sandbox" data-tab="sandbox" class="ui tab p-0 m-0"> </div>
+      </div>
+    </div>
+  </div>
+  <!-- Dialog -->
+  <div id="site-modal" class="ui modal">
+    <div class="header">
+      <i class="close icon"></i>
+      <span id="title"></span>
+    </div>
+    <div class="scrolling content"></div>
+    <div class="actions">
+      <div class="ui small labeled icon cancel button">
+        <i class="remove icon"></i>
+        Close (ESC)
+      </div>
+    </div>
+  </div>
+
+  <div id="mess-modal" class="ui modal">
+    <div class="header">
+      <i class="bell outline icon"></i>
+      <span id="title"></span>
+    </div>
+    <div class="scrolling content"></div>
+    <div class="actions">
+      <div class="ui small labeled icon cancel button">
+        <i class="remove icon"></i>
+        Close (ESC)
+      </div>
+    </div>
+  </div>
+
+  <div id="site-settings" class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+      <i class="cog icon"></i>
+      Thiết lập
+    </div>
+    <div class="content">
+      <div class="ui form">
+        <h5 class="ui header">Chế độ giao diện</h5>
+        <div class="field">
+          <div class="ui toggle checkbox">
+            <input type="radio" name="theme-mode" value="vs">
+            <label>Nền <b>sáng</b></label>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui toggle checkbox">
+            <input type="radio" name="theme-mode" value="vs-dark" checked="checked">
+            <label>Nền <b>tối</b></label>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui toggle checkbox">
+            <input type="radio" name="theme-mode" value="hc-black">
+            <label>Nền <b>tối, tương phản cao</b></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="info-modal" class="ui modal">
+    <div class="header">
+      <i class="bell outline icon"></i>
+      <span id="title">Hướng dẫn cơ bản</span>
+    </div>
+    <div class="scrolling content">
+      <h2>Việc nhập xuất dữ liệu</h2>
+      <ol>
+        <li>Nhập dữ liệu qua Input <ul>
+            <li>Dữ liệu được nhập thông qua các lệnh hỗ trợ đọc dữ liệu từ bàn phím do người dùng nhập như:<ul>
+                <li><code>Read</code>, <code>ReadLn</code> của Pascal</li>
+                <li><code>gets</code>, <code>scanf</code> của C</li>
+                <li><code>cint &gt;&gt; ...</code> của C++</li>
+                <li><code>input</code>, <code>sys.stdin</code> của Python</li>
+                <li><code>System.Console.ReadLine()</code>, <code>System.Console.Read()</code> và <code>System.Console.ReadKey()</code> của C# </li>
+                <li>...</li>
+              </ul>
+            </li>
+            <li>Khi chạy chương trình các dữ liệu đầu vào sẽ được gởi thông qua Input vì thế bạn cần nhập dữ liệu nào vào chương trình thì chỉ cần viết nó ở cửa sổ SDT
+              Input.
+              Mỗi dữ
+              liệu xuống dòng tương ứng với 1 dòng dữ liệu người dùng nhập và nhấn Enter. </li>
+          </ul>
+        </li>
+        <li>Xuất dữ liệu qua Output<ul>
+            <li>Dữ liệu được xuất thông qua các lệnh hỗ trợ ghi dữ liệu ra màn hình như:<ul>
+                <li><code>Write</code>, <code>WriteLn</code> của Pascal</li>
+                <li><code>Puts</code>, <code>printf</code> của C</li>
+                <li><code>cout &lt;&lt; ...</code> của C++</li>
+                <li><code>print</code> của Python</li>
+                <li><code>System.Console.Write()</code>, <code>System.Console.WriteLine()</code> của C#</li>
+              </ul>
+            </li>
+            <li>Dữ liệu được xuất ra khi chạy chương trình sẽ được hiển thị ở cửa sổ Output</li>
+          </ul>
+        </li>
+        <li>Xuất lỗi qua Error<ul>
+            <li>Dữ liệu lỗi được xuất thông qua các lệnh hỗ trợ xuất lỗi như:<ul>
+                <li><code>Writeln(StdErr , ...);</code> của Pascal</li>
+                <li><code>cerr &lt;&lt; ...</code> , <code>clog &lt;&lt; ...</code>của C++ </li>
+              </ul>
+            </li>
+            <li>Dữ liệu lỗi được hiển thị ở cửa sổ Error khi chạy chương trình </li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+    <div class="actions">
+      <div class="ui small labeled icon cancel button">
+        <i class="remove icon"></i>
+        Close (ESC)
+      </div>
+    </div>
+  </div>
+  <!-- End Dialog -->
+  <div id="site-footer" class="ui bottom attached grid p-0 m-0">
+    <div id="donate-line" class="eight wide column py-0 m-0">
+      <a class="item" target="_blank" href="https://paypal.me/HoanChan"><i class="paypal icon"></i></i> Donate with PayPal</a>
+    </div>
+    <div class="eight wide column py-0 m-0 text-right">© 2020 - Hoàn Chân</div>
+  </div>
+  <!-- Google Analytics (https://www.google.com/analytics) -->
+  <script>
+    !function (j, e, k, y, l, L) {
+      j.GoogleAnalyticsObject = y, j[y] || (j[y] = function () {
+        (j[y].q = j[y].q || []).push(arguments)
+      }), j[y].l = +new Date, l = e.createElement(k),
+        L = e.getElementsByTagName(k)[0], l.src = 'https://www.google-analytics.com/analytics.js',
+        L.parentNode.insertBefore(l, L)
+    }(window, document, 'script', 'ga');
+
+    ga('create', 'UA-50247134-3', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+</body>
+
+</html>

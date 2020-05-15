@@ -1,0 +1,73 @@
+#left > .mini.menu{
+  height: 40px;
+}
+#codeEditor {
+  margin : 0px;
+  padding: 0px;
+  height : calc(100% - 80px);
+}
+
+#input,
+#output,
+#compile,
+#error,
+#sandbox {
+  height: calc(100% - 32px);
+}
+
+#result .column {
+  padding: 0px;
+}
+
+#left,
+#right {
+  height : 100%;
+  padding: 0px;
+}
+
+#content>#right>.row {
+  height: 50%;
+  margin: 0px;
+}
+
+#content>#right>#result>.grid {
+  height: 100%;
+  width : 100%;
+  margin: 0px;
+}
+
+  .resizable.row,
+  .resizable.column{
+    display: block !important;
+  }
+@media only screen and (max-width: 767px) {
+  #right,
+  #result {
+    height: auto !important;
+  }
+
+  #left{
+    height: 350px !important;
+    width: 100%;
+  }
+  #right{
+    width: 100%;
+  }
+  #input,
+  #output,
+  #compile,
+  #error,
+  #sandbox {
+    height: 200px !important;
+  }
+
+  #compiler-options,
+  #command-line-arguments {
+    width: 80px;
+  }
+  
+  .resizable.row,
+  .resizable.column{
+    display: none !important;
+  }
+}

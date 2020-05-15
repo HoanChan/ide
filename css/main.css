@@ -1,0 +1,131 @@
+html,
+body {
+  height    : 100%;
+  min-height: 100%;
+  margin    : 0;
+  padding   : 0;
+  overflow  : hidden;
+}
+
+
+#content {
+  height : calc(100vh - 38px - 19px);
+  margin : 0px;
+  padding: 0px;
+}
+
+@media only screen and (max-width: 767px) {
+
+  html,
+  body {
+    height  : auto;
+    overflow: scroll;
+  }
+
+  #content{
+    height: auto !important;
+  }
+
+
+  #site-footer {
+    position: relative !important;
+  }
+}
+
+#nav {
+  height: 38px;
+}
+
+#footer {
+  height: 19px;
+}
+
+/* =============================================================================================== */
+#site-navigation {
+  border-radius: 0;
+  margin       : 0;
+  background   : #1e1e1e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  height       : 38px;
+}
+
+#navigation-message {
+  font-size  : 1.2em;
+  white-space: nowrap;
+  overflow   : hidden;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(570px);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@-webkit-keyframes slide {
+  0% {
+    transform: translateX(570px);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.navigation-message-text {
+  white-space      : nowrap;
+  -moz-animation   : slide 60s linear infinite;
+  -webkit-animation: slide 60s linear infinite;
+  animation        : slide 60s linear infinite;
+}
+
+.navigation-message-text:hover {
+  -moz-animation-play-state   : paused;
+  -webkit-animation-play-state: paused;
+  animation-play-state        : paused;
+}
+
+#navigation-message a {
+  color      : #41a5f1;
+  font-weight: bold;
+}
+
+#site-icon {
+  width         : 30px;
+  height        : 30px;
+  vertical-align: middle;
+}
+
+#site-header h2 {
+  display       : inline;
+  vertical-align: middle;
+  font-family   : 'Exo 2', sans-serif;
+}
+
+#site-content {
+  height: calc(100% - 38px - 19px);
+}
+
+#site-modal .header {
+  color: #db2828;
+}
+
+#info-modal .header {
+  color: #28b1db;
+}
+
+#site-footer {
+  font-family: "Droid Sans Mono", monospace, monospace, "Droid Sans Fallback";
+  font-size  : 11px;
+  height     : 19px;
+  background   : #1e1e1e;
+  color      : white;
+}
+
+#site-footer a,
+#site-footer i {
+  color: white;
+}
