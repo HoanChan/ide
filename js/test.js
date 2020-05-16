@@ -248,7 +248,7 @@
       $temp.val(window.location.href).select();
       document.execCommand("copy");
       $temp.remove();
-      showMess("Thông báo", "Địa chỉ trang web đã được copy vào ClipBoard, hãy dán vào nơi khác để chia sẻ cho mọi người");
+      ShowDialog("Thông báo", "Địa chỉ trang web đã được copy vào ClipBoard, hãy dán vào nơi khác để chia sẻ cho mọi người", "cyan");
     });
     $("#btnInsertCode").click(function (e) {
       if (confirm("Bạn có chắc sẽ làm điều này không? Toàn bộ mã nguồn hiện tại sẽ bị thay thế.")) {
@@ -273,11 +273,7 @@
     Compiler.setSourceLanguage = function () { monaco.editor.setModelLanguage(sourceEditor.getModel(), $selectLanguage.find(":selected").attr("mode")); };
     Compiler.setSourceFileName = function (fileName) { $(".lm_title")[0].innerText = fileName; };
 
-    Compiler.showError = function (title, content) {
-      $("#site-modal #title").html(title);
-      $("#site-modal .content").html(content);
-      $("#site-modal").modal("show");
-    }
+    Compiler.showError = function (title, content) { ShowDialog(title, content, 'red'); }
 
     // ================================== //
     $(`input[name="theme-mode"][value="${themeMode}"]`).prop("checked", true);
@@ -320,14 +316,14 @@
       if (event.ctrlKey && (keyCode == 107 || keyCode == 187)) { // Ctrl + +
         e.preventDefault();
         fontSize += 1;
-        editorsUpdateFontSize(fontSize);
+        sourceEditor.updateOptions({ fontSize: fontSize });
         return;
       }
 
       if (event.ctrlKey && (keyCode == 109 || keyCode == 189)) { // Ctrl + -
         e.preventDefault();
         fontSize -= 1;
-        editorsUpdateFontSize(fontSize);
+        sourceEditor.updateOptions({ fontSize: fontSize });
         return;
       }
 
@@ -340,16 +336,6 @@
     });
 
   });
-
-  function editorsUpdateFontSize(fontSize) {
-    sourceEditor.updateOptions({ fontSize: fontSize });
-  }
-
-  function showMess(title, content) {
-    $("#mess-modal #title").html(title);
-    $("#mess-modal .content").html(content);
-    $("#mess-modal").modal("show");
-  }
 
   var messagesData = "";
   function showMessages() {

@@ -7,6 +7,9 @@ body {
   overflow  : hidden;
 }
 
+.link{
+    cursor: pointer;
+}
 
 #content {
   height : calc(100vh - 38px - 19px);

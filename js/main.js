@@ -63,7 +63,7 @@ window.Compiler = function () {
   // #region ==== Main Func ==== //
   me.run = function () {
     if (me.getSource().trim() === "") {
-      showError("Lỗi", "Mã nguồn của chương trình không được để trống!");
+      me.showError("Lỗi", "Mã nguồn của chương trình không được để trống!");
       return;
     } else { me.showLoading(); }
     me.beforeRun();

@@ -125,11 +125,7 @@
     });
     return input;
   }
-  function showMess(title, content) {
-    $("#site-modal #title").html(title);
-    $("#site-modal .content").html(content);
-    $("#site-modal").modal("show");
-  }
+  
   //#endregion
   //#region Events
   $(document).ready(function () {

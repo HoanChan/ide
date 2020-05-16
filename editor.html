@@ -32,14 +32,16 @@
   <script src="https://cdn.ckeditor.com/4.14.0/full-all/adapters/jquery.js"></script>
 
   <script src="js/ckeditor.js"></script>
-
   <script src="js/download.js"></script>
+
   <link rel="stylesheet" href="css/utilities.css">
   <link rel="stylesheet" href="css/resizable.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/editor.css">
+  
   <script src="js/importHTML.js"></script>
   <script src="js/resizable.js"></script>
+  <script src="js/dialog.js"></script>
   <script src="js/editor.js"></script>
 </head>
 
@@ -66,24 +68,7 @@
       </div>
     </div>
     <div class="right menu">
-      <div class="ui dropdown item site-links">
-        <span>More</span>
-        <i class="dropdown icon"></i>
-        <div class="menu">
-          <div class="link item" onclick="$('#viettelpay-modal').modal('show')"><i class="dollar sign icon"></i> Donate with ViettelPay</div>
-          <div class="link item" onclick="$('#momo-modal').modal('show')"><i class="dollar sign icon"></i> Donate with Momo</div>
-          <a class="item" target="_blank" href="https://paypal.me/HoanChan"><i class="paypal icon"></i> Donate with PayPal</a>
-          <div class="divider"></div>
-          <a class="item" target="_blank" href="https://hoanchan.github.io/"><i class="github icon"></i> View source code on Github</a>
-          <a class="item" target="_blank" href="https://github.com/HoanChan/HoanChan.github.io/issues/new"><i class="exclamation circle icon"></i> Report an issue</a>
-          <div class="divider"></div>
-          <a class="item" target="_blank" href="mailto:Le.Hoan.Chan@gmail.com"><i class="paper plane icon"></i> Contact the author</a>
-          <div class="divider"></div>
-          <a class="item" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fhoanchan.github.io%2Flive%2Fide"
-            style="background-color: #1877f2 !important; color: white !important;"><i class="facebook icon"></i>
-            Share on Facebook</a>
-        </div>
-      </div>
+      <div data-import-html="module/menuRight.html"></div>
     </div>
   </div>
   <div id="content" class="ui grid p-1">
@@ -157,54 +142,8 @@
       </div>
     </div>
   </div>
-  <!-- Dialog -->
-  <div id="mess-modal" class="ui modal">
-    <div class="header">
-      <i class="bell outline icon"></i>
-      <span id="title"></span>
-    </div>
-    <div class="scrolling content"></div>
-    <div class="actions">
-      <div class="ui small labeled icon cancel button">
-        <i class="remove icon"></i>
-        Close (ESC)
-      </div>
-    </div>
-  </div>
-  <div id="momo-modal" class="ui modal">
-    <div class="header">
-      <i class="bell outline icon"></i>
-      <span id="title">Quét mã Momo ủng hộ tôi</span>
-    </div>
-    <div class="scrolling content text-center">
-      <img src="images/Momo.svg" alt="" width="300" height="300">
-      <h2>LE HOAN CHAN</h2>
-    </div>
-    <div class="actions">
-      <div class="ui small labeled icon cancel button">
-        <i class="remove icon"></i>
-        Close (ESC)
-      </div>
-    </div>
-  </div>
-  <div id="viettelpay-modal" class="ui modal">
-    <div class="header">
-      <i class="bell outline icon"></i>
-      <span id="title">Quét mã ViettelPay ủng hộ tôi</span>
-    </div>
-    <div class="scrolling content text-center">
-      <img src="images/viettelpay.jpg" alt="" width="300" height="300">
-      <h2>LE HOAN CHAN</h2>
-    </div>
-    <div class="actions">
-      <div class="ui small labeled icon cancel button">
-        <i class="remove icon"></i>
-        Close (ESC)
-      </div>
-    </div>
-  </div>
-  <!-- End Dialog -->
-  <div data-import-html="module/footer.html"></div>  
+  <div data-import-html="module/dialog.html"></div>
+  <div data-import-html="module/footer.html"></div>
 </body>
 
 </html>

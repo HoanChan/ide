@@ -2,9 +2,7 @@
     min-width: 100px;
     width: calc(100% - 40px);    
 }
-.link{
-    cursor: pointer;
-}
+
 #txtInput, #txtOutput{
     font-family: 'Consolas', 'Courier New', Courier, monospace;
 }

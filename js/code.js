@@ -174,7 +174,7 @@
       $temp.val(window.location.href).select();
       document.execCommand("copy");
       $temp.remove();
-      showMess("Thông báo", "Địa chỉ trang web đã được copy vào ClipBoard, hãy dán vào nơi khác để chia sẻ cho mọi người");
+      ShowDialog("Thông báo", "Địa chỉ trang web đã được copy vào ClipBoard, hãy dán vào nơi khác để chia sẻ cho mọi người", "cyan");
     });
 
     $("#btnInsertCode").click(function (e) {
@@ -225,11 +225,7 @@
       document.getElementById("sandbox-message-dot").hidden = true;
     };
 
-    Compiler.showError = function (title, content) {
-      $("#site-modal #title").html(title);
-      $("#site-modal .content").html(content);
-      $("#site-modal").modal("show");
-    }
+    Compiler.showError = function (title, content) { ShowDialog(title, content, 'red'); }
     // ================================== //
     $('.dot').parent().click(function (event) {
       $(event.target).children('.dot')[0].hidden = true;
@@ -302,20 +298,6 @@
     stderrEditor.updateOptions({ fontSize: fontSize });
     compileOutputEditor.updateOptions({ fontSize: fontSize });
     sandboxMessageEditor.updateOptions({ fontSize: fontSize });
-  }
-  function ShareUrl() {
-    var $temp = $("<input>");
-    $("body").append($temp);
-    $temp.val(window.location.href).select();
-    document.execCommand("copy");
-    $temp.remove();
-    showMess("Thông báo", "Địa chỉ trang web đã được copy vào ClipBoard, hãy dán vào nơi khác để chia sẻ cho mọi người");
-  }
-
-  function showMess(title, content) {
-    $("#mess-modal #title").html(title);
-    $("#mess-modal .content").html(content);
-    $("#mess-modal").modal("show");
   }
 
   var messagesData = "";
