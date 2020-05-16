@@ -165,6 +165,9 @@
         console.log(files);
         return;
       }
+      if (Data.length == 0) {
+        AddProblem('Import Problem', Data.length, true).click();
+      }
       let newIndex = Data[SelectedProblemIndex].Tests.length;
       for (let index = 0; index < files.length; index += 2, newIndex++) {
         let inputFile = await ReadFile(files[index + 1]);

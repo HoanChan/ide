@@ -92,6 +92,7 @@
     resizableV.each(function (index) { dragElement(this, true); });
     resizableH.each(function (index) { dragElement(this, false); });
     HideResize();
+    if (typeof MonacoResize != 'undefined' && MonacoResize) MonacoResize();
     function dragElement(element, vertical) {
       let max = getData($(element), "max", 70, "%");
       let min = getData($(element), "min", 30, "%");

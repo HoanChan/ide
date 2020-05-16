@@ -16,7 +16,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta property="og:title" content="HC IDE">
   <meta property="og:description" content="Code IDE for Pascal, C, Java, Python, Ruby, Basic, and more.">
-  <meta property="og:image" content="https://raw.githubusercontent.com/HoanChan/HoanChan.github.io/master/live/ide/images/background.png">
+  <meta property="og:image" content="https://raw.githubusercontent.com/HoanChan/ide/master/images/background.png">
   <title>HC-IDE</title>
   <link rel="shortcut icon" href="./images/icon.png" type="image/x-icon">
   <link rel="icon" href="./images/icon.png" type="image/x-icon">
@@ -27,12 +27,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
   <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/loader.js"></script>
-  <script type="text/javascript" src="third_party/download.js"></script>
+  <script src="js/download.js"></script>
 
   <link rel="stylesheet" href="css/utilities.css">
   <link rel="stylesheet" href="css/resizable.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/code.css">
+  <script src="js/importHTML.js"></script>
   <script src="js/resizable.js"></script>
   <script src="js/main.js"></script>
   <script src="js/code.js"></script>
@@ -41,7 +42,7 @@
 <body>
   <div id="site-navigation" class="ui small inverted menu">
     <div id="site-header" class="header item">
-      <a href="">
+      <a href="index.html">
         <img id="site-icon" src="./images/icon.png">
         <h2 class="mobile hidden">HC-IDE</h2>
       </a>
@@ -50,7 +51,7 @@
       <div class="ui dropdown item site-links on-hover">
         File <i class="dropdown icon"></i>
         <div class="menu">
-          <a class="item" target="_blank" href="https://HoanChan.github.io/live/ide"><i class="file code icon"></i> Tạo mới</a>
+          <a class="item" href=""><i class="file code icon"></i> Tạo mới</a>
           <div id="btnOpen" class="item btn-file"><i class="code icon"></i> Mở (Ctrl + O)</div>
           <div id="btnSave" class="item"><i class="save icon"></i> Lưu (Ctrl + S)</div>
           <div id="btnDownload" class="item"><i class="download icon"></i> Tải về</div>
@@ -71,6 +72,8 @@
         <span>More</span>
         <i class="dropdown icon"></i>
         <div class="menu">
+          <div class="link item" onclick="$('#viettelpay-modal').modal('show')"><i class="dollar sign icon"></i> Donate with ViettelPay</div>
+          <div class="link item" onclick="$('#momo-modal').modal('show')"><i class="dollar sign icon"></i> Donate with Momo</div>
           <a class="item" target="_blank" href="https://paypal.me/HoanChan"><i class="paypal icon"></i> Donate with PayPal</a>
           <div class="divider"></div>
           <a class="item" target="_blank" href="https://hoanchan.github.io/"><i class="github icon"></i> View source code on Github</a>
@@ -286,26 +289,7 @@
     </div>
   </div>
   <!-- End Dialog -->
-  <div id="site-footer" class="ui bottom attached grid p-0 m-0">
-    <div id="donate-line" class="eight wide column py-0 m-0">
-      <a class="item" target="_blank" href="https://paypal.me/HoanChan"><i class="paypal icon"></i></i> Donate with PayPal</a>
-    </div>
-    <div class="eight wide column py-0 m-0 text-right">© 2020 - Hoàn Chân</div>
-  </div>
-  <!-- Google Analytics (https://www.google.com/analytics) -->
-  <script>
-    !function (j, e, k, y, l, L) {
-      j.GoogleAnalyticsObject = y, j[y] || (j[y] = function () {
-        (j[y].q = j[y].q || []).push(arguments)
-      }), j[y].l = +new Date, l = e.createElement(k),
-        L = e.getElementsByTagName(k)[0], l.src = 'https://www.google-analytics.com/analytics.js',
-        L.parentNode.insertBefore(l, L)
-    }(window, document, 'script', 'ga');
-
-    ga('create', 'UA-50247134-3', 'auto');
-    ga('send', 'pageview');
-
-  </script>
+  <div data-import-html="module/footer.html"></div>
 </body>
 
 </html>

@@ -374,7 +374,7 @@
 
   function loadMessages() {
     $.ajax({
-      url: `https://hoanchan.github.io/live/ide/messages.json?${Date.now()}`,
+      url: `messages.json?${Date.now()}`,
       type: "GET",
       headers: {
         "Accept": "application/json"
