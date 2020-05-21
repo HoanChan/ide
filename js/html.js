@@ -48,7 +48,6 @@
       scrollBeyondLastLine: false,
       readOnly: false,
       theme: themeMode,
-      minimap: { enabled: false }
     });
 
     jsEditor = monaco.editor.create(document.getElementById("JS"), {
@@ -60,12 +59,13 @@
       scrollBeyondLastLine: false,
       readOnly: false,
       theme: themeMode,
-      minimap: { enabled: false }
     });
 
-    htmlEditor.getModel().onDidChangeContent(UpdateResult);
-    cssEditor.getModel().onDidChangeContent(UpdateResult);
-    jsEditor.getModel().onDidChangeContent(UpdateResult);
+    htmlEditor.getModel().onDidChangeContent(UpdateResult2);
+    cssEditor.getModel().onDidChangeContent(UpdateResult2);
+    jsEditor.getModel().onDidChangeContent(UpdateResult2);
+
+    LoadTemplates("jquery");
 
     window.MonacoResize = function () {
       htmlEditor.layout();
@@ -73,14 +73,91 @@
       jsEditor.layout();
     };
   });
-
-  function UpdateResult() {
-    $("#RESULT").contents().find("body").html(htmlEditor.getValue());
-    $("#RESULT").contents().find("head").append("<style>" + cssEditor.getValue() + "</style>");
-    $("#RESULT").contents().find("head").append("<script>" + jsEditor.getValue() + "</script>");
-
+  let Updating = false;
+  function LoadTemplates(name) {
+    $.ajax({
+      async: false,
+      type: 'GET',
+      url: `templates/html/${name}.html`,
+      success: function (data) {
+        Updating = true;
+        let result = data.split(/^\<\!--@-->/gm);
+        htmlEditor.setValue(result.length > 0 ? result[0].trim() : "");
+        cssEditor.setValue(result.length > 1 ? result[1].trim() : "");
+        jsEditor.setValue(result.length > 2 ? result[2].trim() : "");
+        Updating = false;
+        UpdateResult2();
+      },
+      fail: function () {
+        console.log(`templates/html/${name}.html NOT FOUND`);
+      }
+    });
   }
 
+  function UpdateResult() {
+    if (Updating) return;
+    Updating = true;
+    const frame1 = document.getElementById('RESULT');
+    const frameDoc = frame1.contentWindow || frame1.contentDocument.document || frame1.contentDocument;
+    const regex = /^\<head\>(.*?)\<\/head\>.*?\<body\>(.*?)\<\/body\>/gsm;
+    var str = htmlEditor.getValue();
+    let html = `<html><head><style>${cssEditor.getValue()}</style></head>
+    <body>${str}<script>${jsEditor.getValue()}</script></body></html>`;
+    var result = regex.exec(str);
+    if (result && result.length > 2) {
+      html = `<html><head>${result[1]}<style>${cssEditor.getValue()}</style></head>
+    <body>${result[2]}<script>${jsEditor.getValue()}</script></body></html>`;
+    }
+    frameDoc.document.write(html);
+    frameDoc.document.close();
+    Updating = false;
+  }
+  
+  function UpdateResult2() {
+    const getGeneratedPageURL = ({ html, css, js, head }) => {
+      const getBlobURL = (code, type) => {
+        const blob = new Blob([code], { type })
+        return URL.createObjectURL(blob)
+      }
+
+      const cssURL = getBlobURL(css, 'text/css');
+      const jsURL = getBlobURL(js, 'text/javascript');
+
+      const source = `
+        <html>
+          <head>
+            ${head || ""}
+            ${css && `<link rel="stylesheet" type="text/css" href="${cssURL}" />`}
+          </head>
+          <body>
+            ${html || ''}
+            ${js && `<script src="${jsURL}"></script>`}
+          </body>
+        </html>
+      `;
+      return getBlobURL(source, 'text/html');
+    }
+    const regex = /^\<head\>(.*?)\<\/head\>.*?\<body\>(.*?)\<\/body\>/gsm;
+    var str = htmlEditor.getValue();
+    let url = getGeneratedPageURL({
+      html: str,
+      css: cssEditor.getValue(),
+      js: jsEditor.getValue()
+    })
+    var result = regex.exec(str);
+    if (result && result.length > 2) {
+      url = getGeneratedPageURL({
+        html: result[2],
+        css: cssEditor.getValue(),
+        js: jsEditor.getValue(),
+        head: result[1]
+      })
+    }
+
+    const iframe = document.querySelector('#RESULT')
+    iframe.src = url
+  }
+  
   function selectFile(contentType, multiple) {
     return new Promise(resolve => {
       let input = document.createElement('input');
@@ -111,7 +188,7 @@
     });
     // =================================== //
     loadMessages();
-    
+
     // $("#btnOpen").click(async function (e) {
     //   let file = await selectFile(".asm, .sh, .bas, .c, .c, .c, .cs, .cpp, .cpp, .cpp, .lisp, .d, .exs, .erl, .out, .f90, .go, .hs, .java, .js, .lua, .nim, .ml, .m, .pas, .php, .txt, .pro, .py, .py, .rb, .rs, .ts, .v", false);
     //   let reader = new FileReader();
