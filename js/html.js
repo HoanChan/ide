@@ -1,113 +1,11 @@
-/// <reference path="main.js" />
 "use strict";
 (function ($) {
-  const localStorageSetItem = function (key, value) {
-    try {
-      localStorage.setItem(key, value);
-    } catch (ignorable) {
-    }
-  }
-  const localStorageGetItem = function (key) {
-    try {
-      return localStorage.getItem(key);
-    } catch (ignorable) {
-      return null;
-    }
-  }
-  var themeMode = localStorageGetItem("themeMode") || "vs-dark";
-  var fontSize = 14;
-
-  //========================================================================================================================================//
-  require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' } });
-
-  // Before loading vs/editor/editor.main, define a global MonacoEnvironment that overwrites
-  // the default worker url location (used when creating WebWorkers). The problem here is that
-  // HTML5 does not allow cross-domain web workers, so we need to proxy the instantiation of
-  // a web worker through a same-domain script
-  window.MonacoEnvironment = {
-    getWorkerUrl: function (workerId, label) {
-      return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-          self.MonacoEnvironment = {
-            baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/'
-          };
-          importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');`
-      )}`;
-    }
-  };
-  var htmlEditor, cssEditor, jsEditor;
-  require(["vs/editor/editor.main"], function () {
-    // Through the options literal, the behaviour of the editor can be easily customized.
-    // Here are a few examples of config options that can be passed to the editor.
-    // You can also call editor.updateOptions at any time to change the options.
-
-    cssFormatMonaco(monaco, {
-      "indent_size": "2",
-      "indent_char": " ",
-      "max_preserve_newlines": "-1",
-      "preserve_newlines": false,
-      "keep_array_indentation": false,
-      "break_chained_methods": false,
-      "indent_scripts": "normal",
-      "brace_style": "collapse",
-      "space_before_conditional": true,
-      "unescape_strings": false,
-      "jslint_happy": false,
-      "end_with_newline": false,
-      "wrap_line_length": "0",
-      "indent_inner_html": false,
-      "comma_first": false,
-      "e4x": false,
-      "indent_empty_lines": false
-    });
-
-    htmlEditor = monaco.editor.create(document.getElementById("HTML"), {
-      value: "<html>\n<head>\n</head>\n<body>\n\t<p>Hello</p>\n</body>\n</html>",
-      language: "html",
-      automaticLayout: true, // the important part
-      lineNumbers: "on",
-      tabSize: 2,
-      roundedSelection: false,
-      scrollBeyondLastLine: false,
-      readOnly: false,
-      theme: themeMode,
-    });
-
-    cssEditor = monaco.editor.create(document.getElementById("CSS"), {
-      value: "p{\n\tcolor:red;\n}",
-      language: "css",
-      automaticLayout: true, // the important part
-      lineNumbers: "on",
-      tabSize: 2,
-      roundedSelection: false,
-      scrollBeyondLastLine: false,
-      readOnly: false,
-      theme: themeMode,
-    });
-
-    jsEditor = monaco.editor.create(document.getElementById("JS"), {
-      value: "function doSomeThing(){\n}",
-      language: "javascript",
-      automaticLayout: true, // the important part
-      lineNumbers: "on",
-      tabSize: 2,
-      roundedSelection: false,
-      scrollBeyondLastLine: false,
-      readOnly: false,
-      theme: themeMode,
-    });
-
-    htmlEditor.getModel().onDidChangeContent(UpdateResult2);
-    cssEditor.getModel().onDidChangeContent(UpdateResult2);
-    jsEditor.getModel().onDidChangeContent(UpdateResult2);
-
-    LoadTemplates("js");
-
-    window.MonacoResize = function () {
-      htmlEditor.layout();
-      cssEditor.layout();
-      jsEditor.layout();
-    };
-  });
+  Editor.Init([
+    { ID: "HTML", Lang: "html", Value: "<html>\n<head>\n</head>\n<body>\n\t<p>Hello</p>\n</body>\n</html>", OnChange : UpdateResult },
+    { ID: "CSS", Lang: "css", Value: "p{\n\tcolor:red;\n}", OnChange : UpdateResult },
+    { ID: "JS", Lang: "javascript", Value: "function doSomeThing(){\n}", OnChange : UpdateResult }
+  ], function () { $('.btnInsertCode:first-child').click(); });
+  window.MonacoResize = Editor.Resize;
 
   function GetCode(str) {
     let data = str.split('\n');
@@ -127,38 +25,19 @@
         Updating = true;
         const regex = /<head>(.*?<\/head>\s*<body>.*?<\/body>)\s*<style>(.*?)<\/style>\s*<script>(.*?)<\/script>/gms;
         let result = regex.exec(data);
-        htmlEditor.setValue(result.length > 1 ? result[1].trim() : "");
-        cssEditor.setValue(result.length > 2 ? GetCode(result[2]) : "");
-        jsEditor.setValue(result.length > 3 ? GetCode(result[3].trim()) : "");
+        Editor.Get('HTML').setValue(result.length > 1 ? result[1].trim() : "");
+        Editor.Get('CSS').setValue(result.length > 2 ? GetCode(result[2]) : "");
+        Editor.Get('JS').setValue(result.length > 3 ? GetCode(result[3].trim()) : "");
         Updating = false;
-        UpdateResult2();
+        UpdateResult();
       },
       fail: function () {
         console.log(`templates/html/${name}.html NOT FOUND`);
       }
     });
   }
-
-  function UpdateResult() {
-    if (Updating) return;
-    Updating = true;
-    const frame1 = document.getElementById('RESULT');
-    const frameDoc = frame1.contentWindow || frame1.contentDocument.document || frame1.contentDocument;
-    const regex = /^\<head\>(.*?)\<\/head\>.*?\<body\>(.*?)\<\/body\>/gsm;
-    var str = htmlEditor.getValue();
-    let html = `<html><head><style>${cssEditor.getValue()}</style></head>
-    <body>${str}<script>${jsEditor.getValue()}</script></body></html>`;
-    var result = regex.exec(str);
-    if (result && result.length > 2) {
-      html = `<html><head>${result[1]}<style>${cssEditor.getValue()}</style></head>
-    <body>${result[2]}<script>${jsEditor.getValue()}</script></body></html>`;
-    }
-    frameDoc.document.write(html);
-    frameDoc.document.close();
-    Updating = false;
-  }
   
-  function UpdateResult2() {
+  function UpdateResult() {
     const getGeneratedPageURL = ({ html, css, js, head }) => {
       const getBlobURL = (code, type) => {
         const blob = new Blob([code], { type })
@@ -183,18 +62,18 @@
       return getBlobURL(source, 'text/html');
     }
     const regex = /^\<head\>(.*?)\<\/head\>.*?\<body\>(.*?)\<\/body\>/gsm;
-    var str = htmlEditor.getValue();
+    var str = Editor.Get('HTML').getValue();
     let url = getGeneratedPageURL({
       html: str,
-      css: cssEditor.getValue(),
-      js: jsEditor.getValue()
+      css: Editor.Get('CSS').getValue(),
+      js: Editor.Get('JS').getValue()
     })
     var result = regex.exec(str);
     if (result && result.length > 2) {
       url = getGeneratedPageURL({
         html: result[2],
-        css: cssEditor.getValue(),
-        js: jsEditor.getValue(),
+        css: Editor.Get('CSS').getValue(),
+        js: Editor.Get('JS').getValue(),
         head: result[1]
       })
     }
@@ -223,8 +102,6 @@
   //========================================================================================================================================//
   $(document).ready(function () {
     console.log("Hey, HC-IDE is open-sourced. Have fun!");
-    // $('.tabular.menu .item').tab();
-    // $("select.dropdown").dropdown();
     $(".ui.dropdown").dropdown();
     $(".ui.dropdown.site-links").dropdown({ action: "hide", on: "hover" });
     $(".ui.checkbox").checkbox();
@@ -232,20 +109,9 @@
       $(this).closest(".message").transition("fade");
     });
     // =================================== //
-    loadMessages();
     $('.btnInsertCode').click(function (e) { 
       LoadTemplates($(this).data("template"));
     });
-    // $("#btnOpen").click(async function (e) {
-    //   let file = await selectFile(".asm, .sh, .bas, .c, .c, .c, .cs, .cpp, .cpp, .cpp, .lisp, .d, .exs, .erl, .out, .f90, .go, .hs, .java, .js, .lua, .nim, .ml, .m, .pas, .php, .txt, .pro, .py, .py, .rb, .rs, .ts, .v", false);
-    //   let reader = new FileReader();
-    //   reader.onload = function () { htmlEditor.setValue(reader.result); };
-    //   reader.readAsText(file);
-    // });
-
-    // $("#btnSave").click(function (e) {
-    //   Compiler.save()
-    // });
 
     $("#btnDownload").click(function (e) {
       var value = parseInt($selectLanguage.val());
@@ -260,13 +126,6 @@
       $temp.remove();
       ShowDialog("Thông báo", "Địa chỉ trang web đã được copy vào ClipBoard, hãy dán vào nơi khác để chia sẻ cho mọi người", "cyan");
     });
-
-    // $("#btnInsertCode").click(function (e) {
-    //   if (confirm("Bạn có chắc sẽ làm điều này không? Toàn bộ mã nguồn hiện tại sẽ bị thay thế.")) {
-    //     Compiler.insertTemplate();
-    //   }
-    // });
-
 
     $("body").keydown(function (e) {
       var keyCode = e.keyCode || e.which;
@@ -296,20 +155,6 @@
         return;
       }
 
-      if (event.ctrlKey && (keyCode == 107 || keyCode == 187)) { // Ctrl + +
-        e.preventDefault();
-        fontSize += 1;
-        editorsUpdateFontSize(fontSize);
-        return;
-      }
-
-      if (event.ctrlKey && (keyCode == 109 || keyCode == 189)) { // Ctrl + -
-        e.preventDefault();
-        fontSize -= 1;
-        editorsUpdateFontSize(fontSize);
-        return;
-      }
-
       if (event.ctrlKey && keyCode == 79) { // Ctrl + O
         e.preventDefault();
         $("#btnOpen").click();
@@ -317,53 +162,5 @@
       }
 
     });
-
-  });
-  function editorsUpdateFontSize(fontSize) {
-    htmlEditor.updateOptions({ fontSize: fontSize });
-    cssEditor.updateOptions({ fontSize: fontSize });
-    jsEditor.updateOptions({ fontSize: fontSize });
-    stderrEditor.updateOptions({ fontSize: fontSize });
-    compileOutputEditor.updateOptions({ fontSize: fontSize });
-    sandboxMessageEditor.updateOptions({ fontSize: fontSize });
-  }
-
-  var messagesData = "";
-  function showMessages() {
-    var $navigationMessage = $("#navigation-message span");
-    var $about = $("#about");
-    $navigationMessage.html("");
-    $navigationMessage.parent().width(0);
-    var width = $about.offset().left - parseFloat($about.css("padding-left")) - $navigationMessage.parent().offset().left - parseFloat($navigationMessage.parent().css("padding-left"));
-    if (width < 100 || messagesData === undefined) { return; }
-    var messages = messagesData["messages"];
-    $navigationMessage.css("animation-duration", messagesData["duration"]);
-    $navigationMessage.parent().width(width - 5);
-    var combinedMessage = "";
-    for (var i = 0; i < messages.length; ++i) {
-      combinedMessage += `${messages[i]}`;
-      if (i != messages.length - 1) {
-        combinedMessage += "&nbsp".repeat(Math.min(200, messages[i].length));
-      }
-    }
-    $navigationMessage.html(combinedMessage);
-  }
-
-  function loadMessages() {
-    $.ajax({
-      url: `messages.json?${Date.now()}`,
-      type: "GET",
-      headers: {
-        "Accept": "application/json"
-      },
-      success: function (data, textStatus, jqXHR) {
-        messagesData = data;
-        showMessages();
-      }
-    });
-  }
-
-  $(window).resize(function () {
-    showMessages();
   });
 })(window.jQuery);
