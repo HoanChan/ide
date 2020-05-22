@@ -4,56 +4,19 @@
 
   var $selectLanguage;
   var Compiler = new window.Compiler();
-  var themeMode = Compiler.localStorageGetItem("themeMode") || "vs-dark";
-  var fontSize = 14;
-
-  //========================================================================================================================================//
-  require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' } });
-
-  // Before loading vs/editor/editor.main, define a global MonacoEnvironment that overwrites
-  // the default worker url location (used when creating WebWorkers). The problem here is that
-  // HTML5 does not allow cross-domain web workers, so we need to proxy the instantiation of
-  // a web worker through a same-domain script
-  window.MonacoEnvironment = {
-    getWorkerUrl: function (workerId, label) {
-      return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-          self.MonacoEnvironment = {
-            baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/'
-          };
-          importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');`
-      )}`;
-    }
-  };
-  var sourceEditor;
-  require(["vs/editor/editor.main"], function () {
-    // Through the options literal, the behaviour of the editor can be easily customized.
-    // Here are a few examples of config options that can be passed to the editor.
-    // You can also call editor.updateOptions at any time to change the options.
-
-    sourceEditor = monaco.editor.create(document.getElementById("codeEditor"), {
-      value: "// First line\nfunction hello() {\n\talert('Hello world!');\n}\n// Last line",
-      language: "javascript",
-      automaticLayout: true, // the important part
-      lineNumbers: "on",
-      roundedSelection: false,
-      scrollBeyondLastLine: false,
-      readOnly: false,
-      theme: themeMode,
-    });
-    window.MonacoResize = function () {
-      sourceEditor.layout();
-    };
-
+  Editor.Init([
+    { ID: "codeEditor", Lang: "javascript", Value: "// First line\nfunction hello() {\n\talert('Hello world!');\n}\n// Last line" },
+  ], function () {
     if (Compiler.getIdFromURI()) {
       Compiler.loadSavedSource();
     } else {
       Compiler.loadRandomLanguage();
     }
-    sourceEditor.focus();
-    sourceEditor.getModel().onDidChangeContent(function (e) {
-      Compiler.onChangeContent(parseInt($selectLanguage.val()));
-    });
+    Editor.Get("codeEditor").focus();
+    Editor.Get("codeEditor").getModel().onDidChangeContent(function (e) { Compiler.onChangeContent(parseInt($selectLanguage.val())); });
+    window.MonacoResize = Editor.Resize;
   });
+  
   //#endregion
   //#region Tests
   var TestReults = [];
@@ -175,7 +138,7 @@
     for (let index = 0; index < tests.length; index++) {
       let testCompiler = new window.Compiler();
       let result = {};
-      testCompiler.setSource = function (value) { sourceEditor.setValue(value); };
+      testCompiler.setSource = function (value) { Editor.Get("codeEditor").setValue(value); };
       // testCompiler.setInput = function (value) { result.Input = value; };
       result.Input = tests[index].Input;
       testCompiler.setOutput = function (value) { result.Output = value; };
@@ -183,7 +146,7 @@
       testCompiler.setCompile = function (value) { result.Compile = value; };
       testCompiler.setSanbox = function (value) { result.Sanbox = value; };
       testCompiler.setStatus = function (status, time, memory) { result.Time = time; result.Memory = memory; };
-      testCompiler.getSource = function () { return sourceEditor.getValue(); };
+      testCompiler.getSource = function () { return Editor.Get("codeEditor").getValue(); };
       testCompiler.getInput = function () { return tests[index].Input; };
       testCompiler.getOuput = function () { return tests[index].Output; };
       testCompiler.getLang = function () { return $selectLanguage.val(); };
@@ -228,7 +191,7 @@
     $("#btnOpen").click(async function (e) {
       let file = await selectFile(".asm, .sh, .bas, .c, .c, .c, .cs, .cpp, .cpp, .cpp, .lisp, .d, .exs, .erl, .out, .f90, .go, .hs, .java, .js, .lua, .nim, .ml, .m, .pas, .php, .txt, .pro, .py, .py, .rb, .rs, .ts, .v", false);
       let reader = new FileReader();
-      reader.onload = function () { sourceEditor.setValue(reader.result); };
+      reader.onload = function () { Editor.Get("codeEditor").setValue(reader.result); };
       reader.readAsText(file);
     });
     $("#btnOpenTest").click(async function (e) {
@@ -240,7 +203,7 @@
     });
     $("#btnDownload").click(function (e) {
       var value = parseInt($selectLanguage.val());
-      download(sourceEditor.getValue(), $(".lm_title")[0].innerText, "text/plain");
+      download(Editor.Get("codeEditor").getValue(), $(".lm_title")[0].innerText, "text/plain");
     });
     $("#btnShare").click(function (e) {
       var $temp = $("<input>");
@@ -264,25 +227,25 @@
       Compiler.changeEditorLanguage();
     });
 
-    Compiler.setSource = function (value) { sourceEditor.setValue(value); };
+    Compiler.setSource = function (value) { Editor.Get("codeEditor").setValue(value); };
     Compiler.setLang = function (value) { $selectLanguage.dropdown("set selected", value); };
 
-    Compiler.getSource = function () { return sourceEditor.getValue(); };
+    Compiler.getSource = function () { return Editor.Get("codeEditor").getValue(); };
     Compiler.getLang = function () { return $selectLanguage.val(); };
 
-    Compiler.setSourceLanguage = function () { monaco.editor.setModelLanguage(sourceEditor.getModel(), $selectLanguage.find(":selected").attr("mode")); };
+    Compiler.setSourceLanguage = function () { monaco.editor.setModelLanguage(Editor.Get("codeEditor").getModel(), $selectLanguage.find(":selected").attr("mode")); };
     Compiler.setSourceFileName = function (fileName) { $(".lm_title")[0].innerText = fileName; };
 
     Compiler.showError = function (title, content) { ShowDialog(title, content, 'red'); }
 
     // ================================== //
-    $(`input[name="theme-mode"][value="${themeMode}"]`).prop("checked", true);
+    $(`input[name="theme-mode"][value="${Editor.themeMode}"]`).prop("checked", true);
     $("input[name=\"theme-mode\"]").on("change", function (e) {
       $('#site-settings').modal('hide');
       themeMode = e.target.value;
-      Compiler.localStorageSetItem("themeMode", themeMode);
+      Compiler.localStorageSetItem("themeMode", Editor.themeMode);
       monaco.editor.setTheme(themeMode);
-      sourceEditor.focus();
+      Editor.Get("codeEditor").focus();
     });
 
     $("body").keydown(function (e) {
@@ -316,14 +279,14 @@
       if (event.ctrlKey && (keyCode == 107 || keyCode == 187)) { // Ctrl + +
         e.preventDefault();
         fontSize += 1;
-        sourceEditor.updateOptions({ fontSize: fontSize });
+        Editor.Get("codeEditor").updateOptions({ fontSize: fontSize });
         return;
       }
 
       if (event.ctrlKey && (keyCode == 109 || keyCode == 189)) { // Ctrl + -
         e.preventDefault();
         fontSize -= 1;
-        sourceEditor.updateOptions({ fontSize: fontSize });
+        Editor.Get("codeEditor").updateOptions({ fontSize: fontSize });
         return;
       }
 
