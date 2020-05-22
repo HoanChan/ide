@@ -1,8 +1,20 @@
 /// <reference path="main.js" />
 "use strict";
 (function ($) {
-  var Compiler = new window.Compiler();
-  var themeMode = Compiler.localStorageGetItem("themeMode") || "vs-dark";
+  const localStorageSetItem = function (key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (ignorable) {
+    }
+  }
+  const localStorageGetItem = function (key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (ignorable) {
+      return null;
+    }
+  }
+  var themeMode = localStorageGetItem("themeMode") || "vs-dark";
   var fontSize = 14;
 
   //========================================================================================================================================//
@@ -28,11 +40,32 @@
     // Here are a few examples of config options that can be passed to the editor.
     // You can also call editor.updateOptions at any time to change the options.
 
+    cssFormatMonaco(monaco, {
+      "indent_size": "2",
+      "indent_char": " ",
+      "max_preserve_newlines": "-1",
+      "preserve_newlines": false,
+      "keep_array_indentation": false,
+      "break_chained_methods": false,
+      "indent_scripts": "normal",
+      "brace_style": "collapse",
+      "space_before_conditional": true,
+      "unescape_strings": false,
+      "jslint_happy": false,
+      "end_with_newline": false,
+      "wrap_line_length": "0",
+      "indent_inner_html": false,
+      "comma_first": false,
+      "e4x": false,
+      "indent_empty_lines": false
+    });
+
     htmlEditor = monaco.editor.create(document.getElementById("HTML"), {
       value: "<html>\n<head>\n</head>\n<body>\n\t<p>Hello</p>\n</body>\n</html>",
       language: "html",
       automaticLayout: true, // the important part
       lineNumbers: "on",
+      tabSize: 2,
       roundedSelection: false,
       scrollBeyondLastLine: false,
       readOnly: false,
@@ -44,6 +77,7 @@
       language: "css",
       automaticLayout: true, // the important part
       lineNumbers: "on",
+      tabSize: 2,
       roundedSelection: false,
       scrollBeyondLastLine: false,
       readOnly: false,
@@ -55,6 +89,7 @@
       language: "javascript",
       automaticLayout: true, // the important part
       lineNumbers: "on",
+      tabSize: 2,
       roundedSelection: false,
       scrollBeyondLastLine: false,
       readOnly: false,
@@ -65,7 +100,7 @@
     cssEditor.getModel().onDidChangeContent(UpdateResult2);
     jsEditor.getModel().onDidChangeContent(UpdateResult2);
 
-    LoadTemplates("jquery");
+    LoadTemplates("js");
 
     window.MonacoResize = function () {
       htmlEditor.layout();
@@ -73,6 +108,15 @@
       jsEditor.layout();
     };
   });
+
+  function GetCode(str) {
+    let data = str.split('\n');
+    while (data.length > 0 && data[0] == "") data.shift();
+    while (data.length > 0 && data[data.length - 1] == "") data.pop();
+    if (data.length == 0) return str;
+    return data.map(a => a.length > 2 && a.substring(0, 2) == "  " ? a.substring(2) : a).join('\n');
+  }
+
   let Updating = false;
   function LoadTemplates(name) {
     $.ajax({
@@ -81,10 +125,11 @@
       url: `templates/html/${name}.html`,
       success: function (data) {
         Updating = true;
-        let result = data.split(/^\<\!--@-->/gm);
-        htmlEditor.setValue(result.length > 0 ? result[0].trim() : "");
-        cssEditor.setValue(result.length > 1 ? result[1].trim() : "");
-        jsEditor.setValue(result.length > 2 ? result[2].trim() : "");
+        const regex = /<head>(.*?<\/head>\s*<body>.*?<\/body>)\s*<style>(.*?)<\/style>\s*<script>(.*?)<\/script>/gms;
+        let result = regex.exec(data);
+        htmlEditor.setValue(result.length > 1 ? result[1].trim() : "");
+        cssEditor.setValue(result.length > 2 ? GetCode(result[2]) : "");
+        jsEditor.setValue(result.length > 3 ? GetCode(result[3].trim()) : "");
         Updating = false;
         UpdateResult2();
       },
@@ -188,7 +233,9 @@
     });
     // =================================== //
     loadMessages();
-
+    $('.btnInsertCode').click(function (e) { 
+      LoadTemplates($(this).data("template"));
+    });
     // $("#btnOpen").click(async function (e) {
     //   let file = await selectFile(".asm, .sh, .bas, .c, .c, .c, .cs, .cpp, .cpp, .cpp, .lisp, .d, .exs, .erl, .out, .f90, .go, .hs, .java, .js, .lua, .nim, .ml, .m, .pas, .php, .txt, .pro, .py, .py, .rb, .rs, .ts, .v", false);
     //   let reader = new FileReader();

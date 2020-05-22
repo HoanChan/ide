@@ -1,0 +1,45 @@
+
+#result .column {
+  padding: 0px;
+}
+
+#left,
+#right {
+  height : 100%;
+  padding: 0px;
+}
+
+#content>#right>.row {
+  height: 50%;
+  margin: 0px;
+}
+
+#content>#right>#result>.grid {
+  height: 100%;
+  width : 100%;
+  margin: 0px;
+}
+
+  .resizable.row,
+  .resizable.column{
+    display: block !important;
+  }
+@media only screen and (max-width: 767px) {
+  #right,
+  #result {
+    height: auto !important;
+  }
+
+  #left{
+    height: 350px !important;
+    width: 100%;
+  }
+  #right{
+    width: 100%;
+  }
+
+  .resizable.row,
+  .resizable.column{
+    display: none !important;
+  }
+}

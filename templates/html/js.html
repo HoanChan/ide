@@ -1,0 +1,25 @@
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <h1>This is Result</h1>
+  <p>This is a paragraph.</p>
+  <button>Doit</button>
+</body>
+
+<style>
+  button {
+    background-color: blue;
+    color: white;
+  }
+</style>
+
+<script>
+  // Shorthand for $( document ).ready()
+  $(function () {
+    $('button').click(function(){
+      $('p').html("ready!");
+    });
+  });
+</script>
