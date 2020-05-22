@@ -68,14 +68,15 @@
           value: el.Value,
           language: el.Lang,
           automaticLayout: true, // the important part
-          lineNumbers: "on",
+          lineNumbers: el.LineNumbers ?? "on",
           tabSize: 2,
           roundedSelection: false,
           scrollBeyondLastLine: false,
-          readOnly: false,
+          readOnly: el.ReadOnly ?? false,
           theme: Editor.themeMode,
+          minimap: { enabled: el.Minimap ?? true }
         });
-        el.Obj.getModel().onDidChangeContent(el.OnChange);
+        el.Obj.getModel().onDidChangeContent(el.OnChange ?? function () { });
       });
 
       Editor.Resize = function () { $.each(Editor.Objs, function (index, el) { el.Obj.layout() }); };
