@@ -7,22 +7,22 @@
   var Compiler = new window.Compiler();
 
   Editor.Init([
-    { ID: "codeEditor", Lang: "javascript", Value: "// First line\nfunction hello() {\n\talert('Hello world!');\n}\n// Last line" },
+    { ID: "codeEditor", Lang: "javascript", TabSize: 4, Value: "// First line\nfunction hello() {\n\talert('Hello world!');\n}\n// Last line" },
     { ID: "input", Lang: "plaintext", Value: "", Minimap: false },
     { ID: "output", Lang: "plaintext", Value: "", Minimap: false },
     { ID: "compile", Lang: "plaintext", Value: "", Minimap: false },
     { ID: "error", Lang: "plaintext", Value: "", Minimap: false },
     { ID: "sandbox", Lang: "plaintext", Value: "", Minimap: false },
-  ], function () { 
-      if (Compiler.getIdFromURI()) {
-        Compiler.loadSavedSource();
-      } else {
-        Compiler.loadRandomLanguage();
-      }
-      Editor.Get("codeEditor").focus();
-      Editor.Get("codeEditor").getModel().onDidChangeContent(function (e) { Compiler.onChangeContent(parseInt($selectLanguage.val())); });
-      window.MonacoResize = Editor.Resize;
-   });
+  ], function () {
+    if (Compiler.getIdFromURI()) {
+      Compiler.loadSavedSource();
+    } else {
+      Compiler.loadRandomLanguage();
+    }
+    Editor.Get("codeEditor").focus();
+    Editor.Get("codeEditor").getModel().onDidChangeContent(function (e) { Compiler.onChangeContent(parseInt($selectLanguage.val())); });
+    window.MonacoResize = Editor.Resize;
+  });
 
   function selectFile(contentType, multiple) {
     return new Promise(resolve => {

@@ -69,7 +69,7 @@
           language: el.Lang,
           automaticLayout: true, // the important part
           lineNumbers: el.LineNumbers ?? "on",
-          tabSize: 2,
+          tabSize: el.TabSize ?? 2,
           roundedSelection: false,
           scrollBeyondLastLine: false,
           readOnly: el.ReadOnly ?? false,
