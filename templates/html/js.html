@@ -1,25 +1,40 @@
-<head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-
+<head></head>
 <body>
-  <h1>This is Result</h1>
-  <p>This is a paragraph.</p>
-  <button>Doit</button>
+  <p><button onclick="myMove()">Click Me</button></p>
+  <div id="container">
+    <div id="animate"></div>
+  </div>
 </body>
 
 <style>
-  button {
-    background-color: blue;
-    color: white;
+  #container {
+    width: 400px;
+    height: 400px;
+    position: relative;
+    background: yellow;
+  }
+
+  #animate {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    background-color: red;
   }
 </style>
 
 <script>
-  // Shorthand for $( document ).ready()
-  $(function () {
-    $('button').click(function(){
-      $('p').html("ready!");
-    });
-  });
+  function myMove() {
+    var elem = document.getElementById("animate");
+    var pos = 0;
+    var id = setInterval(frame, 5);
+    function frame() {
+      if (pos == 350) {
+        clearInterval(id);
+      } else {
+        pos++;
+        elem.style.top = pos + "px";
+        elem.style.left = pos + "px";
+      }
+    }
+  }
 </script>

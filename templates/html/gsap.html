@@ -1,0 +1,71 @@
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js"></script>
+</head>
+
+<body>
+  <div class="box green"></div>
+
+  <div class="nav">
+    <button id="play">play()</button>
+    <button id="pause">pause()</button>
+    <button id="resume">resume()</button>
+    <button id="reverse">reverse()</button>
+    <button id="restart">restart()</button>
+  </div>
+</body>
+
+<style>
+  body {
+    background-color: #1d1d1d;
+    font-family: "Signika Negative", sans-serif;
+    color: #999;
+    margin: 1em;
+    font-size: 18px;
+  }
+
+  .nav {
+    padding: 2em;
+  }
+
+  .box {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    border-radius: 6px;
+    margin-top: 4px;
+    display: inline-block;
+    line-height: 50px;
+    text-align: center;
+    color: #333;
+
+  }
+
+  .green {
+    background-color: #6fb936;
+  }
+
+  .orange {
+    background-color: #f38630;
+  }
+
+  .grey {
+    background-color: #989898;
+  }
+</style>
+
+<script>
+  var tween = gsap.to(".green", {
+    duration: 4,
+    x: 750,
+    rotation: 360,
+    ease: "none",
+    paused: true
+  });
+
+  // click handlers for controlling the tween instance...
+  document.querySelector("#play").onclick = () => tween.play();
+  document.querySelector("#pause").onclick = () => tween.pause();
+  document.querySelector("#resume").onclick = () => tween.resume();
+  document.querySelector("#reverse").onclick = () => tween.reverse();
+  document.querySelector("#restart").onclick = () => tween.restart();
+</script>
