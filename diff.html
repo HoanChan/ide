@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<!--Cái này cho IE khỏi hiện block content vì nó nghĩ đây là web đã lưu -->
+<html>
+
+<head>
+  <!-- Use lastest version of Internet Explorer -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="UTF-8">
+  <meta name="description" content="Free and open-source online code editor that allows you to write and execute code from a rich set of languages.">
+  <meta name="keywords" content="online editor, online code editor, online ide, online compiler, online interpreter, run code online, learn programming online,
+            online debugger, programming in browser, online code runner, online code execution, debug online, debug C code online, debug C++ code online,
+            programming online, snippet, snippets, code snippet, code snippets, pastebin, execute code, programming in browser, run c online, run C++ online,
+            run java online, run python online, run ruby online, run c# online, run rust online, run pascal online, run basic online">
+  <meta name="author" content="Lê Hoàn Chân">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="HC IDE">
+  <meta property="og:description" content="Code IDE for Pascal, C, Java, Python, Ruby, Basic, and more.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/HoanChan/HoanChan.github.io/master/live/ide/images/background.png">
+  <title>HC-IDE</title>
+  <link rel="shortcut icon" href="./images/icon.png" type="image/x-icon">
+  <link rel="icon" href="./images/icon.png" type="image/x-icon">
+  <link rel="apple-touch-icon" href="./images/icon.png">
+  <meta name="apple-mobile-web-app-title" content="HC-IDE">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+  <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/loader.js"></script>
+  <script src="js/download.js"></script>
+
+  <link rel="stylesheet" href="css/utilities.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/diff.css">
+  <script src="js/importHTML.js"></script>
+  <script src="js/monaco.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/diff.js"></script>
+</head>
+
+<body>
+  <div id="site-navigation" class="ui small inverted menu">
+    <div id="site-header" class="header item">
+      <a href="index.html">
+        <img id="site-icon" src="./images/icon.png">
+        <h2 class="mobile hidden">HC-IDE</h2>
+      </a>
+    </div>
+    <div class="left menu">
+      <div class="ui dropdown item site-links on-hover">
+        File <i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item" href=""><i class="file code icon"></i> Tạo mới</a>
+          <div id="btnOpenOri" class="item btn-file"><i class="code icon"></i> Mở file gốc (Ctrl + O)</div>
+          <div id="btnOpenModi" class="item btn-file"><i class="code icon"></i> Mở file so</div>
+          <div id="btnSave" class="item"><i class="save icon"></i> Lưu (Ctrl + S)</div>
+          <div id="btnDownload" class="item"><i class="download icon"></i> Tải về</div>
+          <div id="btnShare" class="item"><i class="share icon"></i> Chia sẻ</div>
+          <div id="btnInsertCode" class="item"><i class="file code outline icon"></i>Chèn code mẫu</div>
+        </div>
+      </div>
+      <div class="link item" onclick="$('#site-settings').modal('show')"><i class="cog icon"></i> <span class="portrait mobile hidden">Cài đặt</span></div>
+
+      <div id="navigation-message" class="item borderless mx-1">
+        <span class="navigation-message-text"></span>
+      </div>
+    </div>
+    <div class="right menu">
+      <div id="about" class="link item" onclick="$('#info-modal').modal('show')"><i class="info circle icon"></i> <span class="mobile hidden">Thông tin</span></div>
+      <div data-import-html="module/menuRight.html"></div>
+    </div>
+  </div>
+  <div id="content" class="ui grid">
+    <div id="container" class="row h-100 w-100 p-0"></div>
+  </div>
+  <div data-import-html="module/dialog.html"></div>
+  <div data-import-html="module/footer.html"></div>
+</body>
+
+</html>
