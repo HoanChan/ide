@@ -338,6 +338,14 @@ int main() {\n\
 }\n\
 ";
 
+  var cobolSource = "\
+IDENTIFICATION DIVISION.\n\
+PROGRAM-ID. MAIN.\n\
+PROCEDURE DIVISION.\n\
+DISPLAY \"hello, world\".\n\
+STOP RUN.\n\
+";
+
   var lispSource = "(write-line \"hello, world\")";
 
   var dSource = "\
@@ -396,12 +404,26 @@ public class Main {\n\
 
   var javaScriptSource = "console.log(\"hello, world\");";
 
+  var kotlinSource = "\
+fun main() {\n\
+    println(\"hello, world\")\n\
+}\n\
+";
+
   var luaSource = "print(\"hello, world\")";
 
-  var nimSource = "\
-# On the Judge0 IDE, Nim is automatically\n\
-# updated every day to the latest stable version.\n\
-echo \"hello, world\"\n\
+  var objectiveCSource = "\
+#import <Foundation/Foundation.h>\n\
+\n\
+int main() {\n\
+    @autoreleasepool {\n\
+        char name[10];\n\
+        scanf(\"%s\", name);\n\
+        NSString *message = [NSString stringWithFormat:@\"hello, %s\\n\", name];\n\
+        printf(\"%s\", message.UTF8String);\n\
+    }\n\
+    return 0;\n\
+}\n\
 ";
 
   var ocamlSource = "print_endline \"hello, world\"";
@@ -430,21 +452,211 @@ main :- write('hello, world\\n').\n\
 
   var pythonSource = "print(\"hello, world\")";
 
+  var rSource = "cat(\"hello, world\\n\")";
+
   var rubySource = "puts \"hello, world\"";
 
   var rustSource = "\
 fn main() {\n\
     println!(\"hello, world\");\n\
 }\n\
-"
+";
+
+  var scalaSource = "\
+object Main {\n\
+    def main(args: Array[String]) = {\n\
+        val name = scala.io.StdIn.readLine()\n\
+        println(\"hello, \"+ name)\n\
+    }\n\
+}\n\
+";
+
+  var sqliteSource = "\
+-- On Judge0 IDE your SQL script is run on chinook database (https://www.sqlitetutorial.net/sqlite-sample-database).\n\
+-- For more information about how to use SQL with Judge0 API please\n\
+-- watch this asciicast: https://asciinema.org/a/326975.\n\
+SELECT\n\
+    Name, COUNT(*) AS num_albums\n\
+FROM artists JOIN albums\n\
+ON albums.ArtistID = artists.ArtistID\n\
+GROUP BY Name\n\
+ORDER BY num_albums DESC\n\
+LIMIT 4;\n\
+";
+  var sqliteAdditionalFiles = "";
+
+  var swiftSource = "\
+import Foundation\n\
+let name = readLine()\n\
+print(\"hello, \\(name!)\")\n\
+";
 
   var typescriptSource = "console.log(\"hello, world\");";
 
-  var vSource = "\
-// On the Judge0 IDE, V is automatically\n\
-// updated every hour to the latest version.\n\
-fn main() {\n\
-    println('hello, world')\n\
+  var vbSource = "\
+Public Module Program\n\
+   Public Sub Main()\n\
+      Console.WriteLine(\"hello, world\")\n\
+   End Sub\n\
+End Module\n\
+";
+
+  var c3Source = "\
+// On the Judge0 IDE, C3 is automatically\n\
+// updated every hour to the latest commit on master branch.\n\
+module main;\n\
+\n\
+extern func void printf(char *str, ...);\n\
+\n\
+func int main()\n\
+{\n\
+    printf(\"hello, world\\n\");\n\
+    return 0;\n\
+}\n\
+";
+
+  var javaTestSource = "\
+import static org.junit.jupiter.api.Assertions.assertEquals;\n\
+\n\
+import org.junit.jupiter.api.Test;\n\
+\n\
+class MainTest {\n\
+    static class Calculator {\n\
+        public int add(int x, int y) {\n\
+            return x + y;\n\
+        }\n\
+    }\n\
+\n\
+    private final Calculator calculator = new Calculator();\n\
+\n\
+    @Test\n\
+    void addition() {\n\
+        assertEquals(2, calculator.add(1, 1));\n\
+    }\n\
+}\n\
+";
+
+  var mpiccSource = "\
+// Try adding \"-n 5\" (without quotes) into command line arguments. \n\
+#include <mpi.h>\n\
+\n\
+#include <stdio.h>\n\
+\n\
+int main()\n\
+{\n\
+    MPI_Init(NULL, NULL);\n\
+\n\
+    int world_size;\n\
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);\n\
+\n\
+    int world_rank;\n\
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);\n\
+\n\
+    printf(\"Hello from processor with rank %d out of %d processors.\\n\", world_rank, world_size);\n\
+\n\
+    MPI_Finalize();\n\
+\n\
+    return 0;\n\
+}\n\
+";
+
+  var mpicxxSource = "\
+// Try adding \"-n 5\" (without quotes) into command line arguments. \n\
+#include <mpi.h>\n\
+\n\
+#include <iostream>\n\
+\n\
+int main()\n\
+{\n\
+    MPI_Init(NULL, NULL);\n\
+\n\
+    int world_size;\n\
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);\n\
+\n\
+    int world_rank;\n\
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);\n\
+\n\
+    std::cout << \"Hello from processor with rank \"\n\
+              << world_rank << \" out of \" << world_size << \" processors.\\n\";\n\
+\n\
+    MPI_Finalize();\n\
+\n\
+    return 0;\n\
+}\n\
+";
+
+  var mpipySource = "\
+# Try adding \"-n 5\" (without quotes) into command line arguments. \n\
+from mpi4py import MPI\n\
+\n\
+comm = MPI.COMM_WORLD\n\
+world_size = comm.Get_size()\n\
+world_rank = comm.Get_rank()\n\
+\n\
+print(f\"Hello from processor with rank {world_rank} out of {world_size} processors\")\n\
+";
+
+  var nimSource = "\
+# On the Judge0 IDE, Nim is automatically\n\
+# updated every day to the latest stable version.\n\
+echo \"hello, world\"\n\
+";
+
+  var pythonForMlSource = "\
+import mlxtend\n\
+import numpy\n\
+import pandas\n\
+import scipy\n\
+import sklearn\n\
+\n\
+print(\"hello, world\")\n\
+";
+
+  var bosqueSource = "\
+// On the Judge0 IDE, Bosque (https://github.com/microsoft/BosqueLanguage)\n\
+// is automatically updated every hour to the latest commit on master branch.\n\
+\n\
+namespace NSMain;\n\
+\n\
+concept WithName {\n\
+    invariant $name != \"\";\n\
+\n\
+    field name: String;\n\
+}\n\
+\n\
+concept Greeting {\n\
+    abstract method sayHello(): String;\n\
+    \n\
+    virtual method sayGoodbye(): String {\n\
+        return \"goodbye\";\n\
+    }\n\
+}\n\
+\n\
+entity GenericGreeting provides Greeting {\n\
+    const instance: GenericGreeting = GenericGreeting@{};\n\
+\n\
+    override method sayHello(): String {\n\
+        return \"hello world\";\n\
+    }\n\
+}\n\
+\n\
+entity NamedGreeting provides WithName, Greeting {\n\
+    override method sayHello(): String {\n\
+        return String::concat(\"hello\", \" \", this.name);\n\
+    }\n\
+}\n\
+\n\
+entrypoint function main(arg?: String): String {\n\
+    var val = arg ?| \"\";\n\
+    if (val == \"1\") {\n\
+        return GenericGreeting@{}->sayHello();\n\
+    }\n\
+    elif (val == \"2\") {\n\
+        return GenericGreeting::instance->sayHello();\n\
+    }\n\
+    else {\n\
+        return NamedGreeting@{name=\"bob\"}->sayHello();\n\
+    }\n\
 }\n\
 ";
 
@@ -470,7 +682,6 @@ fn main() {\n\
     62: javaSource,
     63: javaScriptSource,
     64: luaSource,
-    1000: nimSource,
     65: ocamlSource,
     66: octaveSource,
     67: pascalSource,
@@ -482,7 +693,27 @@ fn main() {\n\
     72: rubySource,
     73: rustSource,
     74: typescriptSource,
-    1001: vSource
+    75: cSource,
+    76: cppSource,
+    77: cobolSource,
+    78: kotlinSource,
+    79: objectiveCSource,
+    80: rSource,
+    81: scalaSource,
+    82: sqliteSource,
+    83: swiftSource,
+    84: vbSource,
+    1001: cSource,
+    1002: cppSource,
+    1003: c3Source,
+    1004: javaSource,
+    1005: javaTestSource,
+    1006: mpiccSource,
+    1007: mpicxxSource,
+    1008: mpipySource,
+    1009: nimSource,
+    1010: pythonForMlSource,
+    1011: bosqueSource
   };
 
   var fileNames = {
@@ -507,7 +738,6 @@ fn main() {\n\
     62: "Main.java",
     63: "script.js",
     64: "script.lua",
-    1000: "main.nim",
     65: "main.ml",
     66: "script.m",
     67: "main.pas",
@@ -519,17 +749,56 @@ fn main() {\n\
     72: "script.rb",
     73: "main.rs",
     74: "script.ts",
-    1001: "main.v"
+    75: "main.c",
+    76: "main.cpp",
+    77: "main.cob",
+    78: "Main.kt",
+    79: "main.m",
+    80: "script.r",
+    81: "Main.scala",
+    82: "script.sql",
+    83: "Main.swift",
+    84: "Main.vb",
+    1001: "main.c",
+    1002: "main.cpp",
+    1003: "main.c3",
+    1004: "Main.java",
+    1005: "MainTest.java",
+    1006: "main.c",
+    1007: "main.cpp",
+    1008: "script.py",
+    1009: "main.nim",
+    1010: "script.py",
+    1011: "main.bsq"
   };
 
   var languageIdTable = {
-    1000: 1,
-    1001: 1
+    1001: 1,
+    1002: 2,
+    1003: 3,
+    1004: 4,
+    1005: 5,
+    1006: 6,
+    1007: 7,
+    1008: 8,
+    1009: 9,
+    1010: 10,
+    1011: 11
   }
 
+  var extraApiUrl = "https://extra.api.judge0.com";
   var languageApiUrlTable = {
-    1000: "https://nim.api.judge0.com",
-    1001: "https://vlang.api.judge0.com"
+    1001: extraApiUrl,
+    1002: extraApiUrl,
+    1003: extraApiUrl,
+    1004: extraApiUrl,
+    1005: extraApiUrl,
+    1006: extraApiUrl,
+    1007: extraApiUrl,
+    1008: extraApiUrl,
+    1009: extraApiUrl,
+    1010: extraApiUrl,
+    1011: extraApiUrl
   }
   // #endregion
 };
