@@ -58,11 +58,16 @@
       color: white;
       text-decoration: none;
     }
+    @media only screen and (max-width: 767px) {
+      .grid>.column {
+        height: 16%;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <div class="ui three column stackable grid container">
+  <div class="ui three column doubling stackable grid container">
     <div class="column">
       <div class="ui green inverted segment p-0">
         <a href="code.html">
