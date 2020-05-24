@@ -786,7 +786,7 @@ entrypoint function main(arg?: String): String {\n\
     1011: 11
   }
 
-  var extraApiUrl = "https://extra.api.judge0.com";
+  var extraApiUrl = "https://cors-anywhere.herokuapp.com/https://extra.api.judge0.com";
   var languageApiUrlTable = {
     1001: extraApiUrl,
     1002: extraApiUrl,
