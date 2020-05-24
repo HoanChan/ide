@@ -1,0 +1,39 @@
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <h2>Div 1</h2>
+  <div id="div1"> </div>
+  <h2>Div 2</h2>
+  <div id="div2"> </div>
+  <button id="btn1">Get External Content</button>
+  <button id="btn2">Get External Content</button>
+</body>
+<style></style>
+<script>
+  $(document).ready(function () {
+    $("#btn1").click(function () {
+      $.ajax({
+        async: false,
+        type: 'GET',
+        url: "https://api.judge0.com/languages/", 
+        success: function (r1) {
+          console.log(r1);
+          $("#div1").html(`<pre>${r1}</pre>`);
+        }
+      });
+    });
+    $("#btn2").click(function () {
+      $.ajax({
+        async: false,
+        type: 'GET',
+        url: "https://cors-anywhere.herokuapp.com/https://extra.api.judge0.com/languages/",
+        success: function (r2) {
+          console.log(r2);
+          $("#div2").html(`<pre>${r2}</pre>`);
+        }
+      });
+    });
+  });
+</script>
