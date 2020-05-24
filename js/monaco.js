@@ -36,9 +36,8 @@
       }
     };
     require(["vs/editor/editor.main"], function () {
-      // Through the options literal, the behaviour of the editor can be easily customized.
-      // Here are a few examples of config options that can be passed to the editor.
-      // You can also call editor.updateOptions at any time to change the options.
+      Editor.Langs = monaco.languages.getLanguages().sort(a => a.id);
+      Editor.Ex = Editor.Langs.flatMap(a => a.extensions);
       $.when(
         $.getScript("https://unpkg.com/css-format-monaco/dist/css-format-monaco.min.js")
       ).done(function () {
