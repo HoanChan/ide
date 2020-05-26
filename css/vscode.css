@@ -1,10 +1,18 @@
-.mini menu{
-    height: 40px;
+.mini menu {
+  height: 40px;
 }
-#codeEditor{
-    height: calc(100% - 40px);
-    padding: 0px;
+
+#codeEditor {
+  height: calc(100% - 40px);
+  padding: 0px;
 }
-.ui.compact.selection.dropdown{
-    min-width: 120px;
+
+.ui.compact.selection.dropdown {
+  min-width: 120px;
+}
+
+@media only screen and (max-width: 767px) {
+  #codeEditor {
+    height: calc(100vh - 38px - 19px - 40px);
+  }
 }
